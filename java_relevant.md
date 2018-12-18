@@ -2,7 +2,7 @@
 ### 部分基于thinkinJava
 ### 目录结构
 - [0. 面向对象概述](#0-面向对象概述)
-- [1.static final 关键字](#1-static_final关键字)
+- [1.Static Final 关键字](#1-Static_Final关键字)
 - 2.
 - 3.
 - 4.
@@ -22,5 +22,35 @@
   * 多态是指程序中定义的引用变量所指向的具体类型和通过该引用变量发出的方法调用在编程时 并不确定，而是在程序运行期间才确定，即一个引用变量倒底会指向哪个类的实例对象，该引用变量 发出的方法调用到底是哪个类中实现的方法，必须在由程序运行期间才能决定。因为在程序运行时才 确定具体的类，这样，不用修改源程序代码，就可以让引用变量绑定到各种不同的类实现上，从 而导致该引用调用的具体方法随之改变，即不修改程序代码就可以改变程序运行时所绑定的具 体代码，让程序可以选择多个运行状态，这就是多态性。
 
 #### 1-Static_Final关键字
+通过static关键字可以满足下面两个方面的需要:
+	 * ·只想为某特定域分配单一的存储空间，而不去考虑要创建多少对象，甚至根本不需要创建任何的对象
+	 * ·希望某个方法不与这个类型的任何对象相关联
+```
+package cn.test;
+
+class Demo{
+    public static int i = 1;
+}
+
+public class staticDemo {
+    private static Demo demo1 = new Demo();
+    private static Demo demo2 = new Demo();
+    public static void main(String[] args){
+        System.out.println(Demo.i);     //1
+        System.out.println(demo1.i);    //1
+        System.out.println(demo2.i);    //1
+        demo1.i++;
+        System.out.println(Demo.i);     //2
+        System.out.println(demo1.i);    //2
+        System.out.println(demo2.i);    //2
+        Demo.i++;
+        System.out.println(Demo.i);     //3
+        System.out.println(demo1.i);    //3
+        System.out.println(demo2.i);    //3
+    }
+}
+```
+
+- **1.2 Final**</br>
 
 
