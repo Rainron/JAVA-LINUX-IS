@@ -332,5 +332,42 @@ public V put(K key, V value) {
 }    
 ```
 - **2.4 Map映射**</br>
+ * Map 是一种把键对象和值对象映射的集合,它的每一个元素都包含一对键对象和值对象。
+ * 标准的Java类库中包含了几种不同的Map：HashMap, TreeMap, LinkedHashMap, WeakHashMap, IdentityHashMap。它们都有同样的基本接口Map，但是行为、效率、排序策略、保存对象的生命周期和判定“键”等价的策略等各不相同。
+ * HashMap：就是使用对象的hashCode()进行快速查询的。此方法能够显着提高性能，同时基于散列表的实现。插入和查询“键值对”的开销是固定的。可以通过构造器设置容量capacity和负载因子load factor，以调整容器的性能。
+ * LinkedHashMap：类似于HashMap，但是迭代遍历它时，取得“键值对”的顺序是其插入次序，或者是最近最少使用(LRU)的次序。只比HashMap慢一点。而在迭代访问时发而更快，因为它使用链表维护内部次序。
+ * TreeMap：基于红黑树数据结构的实现。查看“键”或“键值对”时，它们会被排序(次序由Comparabel或Comparator决定)。TreeMap的特点在 于，你得到的结果是经过排序的。TreeMap是唯一的带有subMap()方法的Map，它可以返回一个子树。
+ * WeakHashMao：弱键(weak key)Map，Map中使用的对象也被允许释放: 这是为解决特殊问题设计的。如果没有map之外的引用指向某个“键”，则此“键”可以被垃圾收集器回收。 
+ * IdentifyHashMap： 使用==代替equals()对“键”作比较的hash map。专为解决特殊问题而设计。
+ 选取HashMap TreeMap简单概述
+ 
+#### 2.4.1HashMap：
+* 以数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复，不保证元素迭代顺序是按照插入时的顺序，key的hash值是先计算key的hashcode值，然后再进行计算，每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals和hashcode方法。
+* 哈希函数：这个函数的设计好坏会直接影响到哈希表的优劣。
+* 哈希冲突：两个不同的元素，计算出来的实际存储地址一样。
+* 哈希冲突的解决方案有多种:开放定址法（发生冲突，继续寻找下一块未被占用的存储地址），再散列函数法，链地址法，而HashMap即是采用了链地址法，也就是数组+链表的方式，
+
+```java
+HashMap的主干是一个Node数组。Node是HashMap的基本组成单元，每一个Node包含一个key-value键值对。
+static class Node<K,V> implements Map.Entry<K,V> {
+        final int hash;//计算好的的元素hash（实际存储地址）
+        final K key;
+        V value;
+        Node<K,V> next;//存储指向下一个Node的引用，单链表结构
+
+        Node(int hash, K key, V value, Node<K,V> next) {
+            this.hash = hash;
+            this.key = key;
+            this.value = value;
+            this.next = next;
+        }
+ }
+```
+##### hashMap大体上结构
+![](https://rainron.github.io/JAVA-LINUX-IS/img/java/hashMap.jpg)
+#### 2.4.2TreeMap：
+* 
+```java
 
 
+```
