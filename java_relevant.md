@@ -27,7 +27,7 @@
 通过static关键字可以满足下面两个方面的需要:
   * ·只想为某特定域分配单一的存储空间，而不去考虑要创建多少对象，甚至根本不需要创建任何的对象
   * ·希望某个方法不与这个类型的任何对象相关联
-```
+```java
 package cn.test;
 
 class Demo{
@@ -73,7 +73,7 @@ public class staticDemo {
  * ArrayList：由数组实现的List。允许对元素进行快速随机访问，但是向List中间插入与移除元素的速度很慢。ListIterator只应该用来由后向前遍历 ArrayList,而不是用来插入和移除元素。因为那比LinkedList开销要大很多。 
  * LinkedList ：对顺序访问进行了优化，向List中间插入与删除的开销并不大。随机访问则相对较慢。(使用ArrayList代替。)还具有下列方法：addFirst(),addLast(), getFirst(), getLast(), removeFirst() 和 removeLast(), 这些方法 (没有在任何接口或基类中定义过)使得LinkedList可以当作堆栈、队列和双向队列使用。
  * 源码实现及对比
- ```
+ ```java
  ArrayList
  插入
  public boolean add(E e) {
