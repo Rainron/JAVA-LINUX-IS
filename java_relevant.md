@@ -200,38 +200,41 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                boolean evict) {
     Node<K,V>[] tab; Node<K,V> p; int n, i;
 
-    //确认初始化
+    //初始化数组长度
     if ((tab = table) == null || (n = tab.length) == 0)
         n = (tab = resize()).length;
 
-    //如果桶为空，直接插入新元素，也就是entry
+    //找到具体的数组下标，如果此位置没有值，那么直接初始化一下 Node 并放置在这个位置
     if ((p = tab[i = (n - 1) & hash]) == null)
         tab[i] = newNode(hash, key, value, null);
     else {
         Node<K,V> e; K k;
-        //如果冲突，分为三种情况
-        //key相等时让旧entry等于新entry即可
+        //判断该位置的第一个数据和我们要插入的数据，key 是不是"相等"，如果是，取出这个节点
         if (p.hash == hash &&
             ((k = p.key) == key || (key != null && key.equals(k))))
             e = p;
-        //红黑树情况
+        //判断是否是红黑树情况
         else if (p instanceof TreeNode)
             e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
         else {
             //如果key不相等，则连成链表
             for (int binCount = 0; ; ++binCount) {
                 if ((e = p.next) == null) {
+                   //插入链表的最后面
                     p.next = newNode(hash, key, value, null);
                     if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
                         treeifyBin(tab, hash);
                     break;
                 }
+                // 如果在该链表中找到了相等的 key(== 或 equals)
                 if (e.hash == hash &&
                     ((k = e.key) == key || (key != null && key.equals(k))))
                     break;
+                //那么e为链表中[与要插入的新值的key相等的node
                 p = e;
             }
         }
+        //如果插入的key值与Node中存在key值相同则进行值覆盖并返回
         if (e != null) { // existing mapping for key
             V oldValue = e.value;
             if (!onlyIfAbsent || oldValue == null)
@@ -240,6 +243,8 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
             return oldValue;
         }
     }
+    //假如插入这个值导致 size 已经超过了阈值，需要进行扩容
+    //resize() 方法用于初始化数组或数组扩容，每次扩容后，容量为原来的 2 倍，并进行数据迁移。
     ++modCount;
     if (++size > threshold)
         resize();
@@ -365,6 +370,35 @@ static class Node<K,V> implements Map.Entry<K,V> {
 ```
 ##### hashMap大体上结构
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/hashMap.jpg)
+* HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的，如果定位到的数组位置不含链表（当前entry的next指向null）,那么对于查找，添加等操作很快，仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度为O(n)，首先遍历链表，存在即覆盖，否则新增；对于查找操作来讲，仍需遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，HashMap中的链表出现越少，性能才会越好。
+* 插入元素put方法与上述hashSet一样，这里不再说明。
+```java
+* 计算 key 的 hash 值，根据 hash 值找到对应数组下标: hash & (length-1)
+* 判断数组该位置处的元素是否刚好就是我们要找的，如果不是，走第三步
+* 判断该元素类型是否是 TreeNode，如果是，用红黑树的方法取数据，如果不是，走第四步
+* 遍历链表，直到找到相等(==或equals)的 key
+get()
+final Node<K,V> getNode(int hash, Object key) {
+        Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
+        if ((tab = table) != null && (n = tab.length) > 0 &&
+            (first = tab[(n - 1) & hash]) != null) {
+            if (first.hash == hash && // always check first node
+                ((k = first.key) == key || (key != null && key.equals(k))))
+                return first;
+            if ((e = first.next) != null) {
+                if (first instanceof TreeNode)
+                    return ((TreeNode<K,V>)first).getTreeNode(hash, key);
+                do {
+                    if (e.hash == hash &&
+                        ((k = e.key) == key || (key != null && key.equals(k))))
+                        return e;
+                } while ((e = e.next) != null);
+            }
+        }
+        return null;
+ }
+
+```
 #### 2.4.2TreeMap：
 * 
 ```java
