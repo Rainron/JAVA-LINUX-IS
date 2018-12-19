@@ -93,7 +93,7 @@ ensureCapacityInternal->ensureExplicitCapacity->grow
         // minCapacity is usually close to size, so this is a win:
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
-上述add方法，主要是将e赋值给数组，将数组长度加一，ensureCapacityInternal里面做一些逻辑判断
+上述add方法，主要是将e赋值给数组，将数组长度加一，ensureCapacityInternal里面做一些逻辑判断。
 Arrays.copyOf(elementData, newCapacity);这行代码非常关键，他是影响ArrayList插入性能的主要因素，当数组下表超过数组长度时会调用这个方法，调用Arrays.copyOf的方法时会重新copy构建一个新的数组,会消耗大量的资源，导致性能变的很差。
 指定插入
 public void add(int index, E element) {
@@ -105,13 +105,13 @@ public void add(int index, E element) {
         elementData[index] = element;
         size++;
 }
-大量copy导致大量的数组移动，导致性能底下。remove方法与add方法实现类似.
+大量copy导致大量的数组移动，导致性能底下。remove方法与add方法实现类似。
 随机访问和遍历
 public E get(int index) {
         rangeCheck(index);
         return elementData(index);
 }
-直接指向数组下标位置的元素返回
+直接指向数组下标位置的元素返回。
 
 LinkedList
 内部有两个Node对象，一个指向集合第一个，一个指向最后一个。
@@ -142,7 +142,7 @@ void linkLast(E e) {
         size++;
         modCount++;
 }
-普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍.
+普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍。
 指定插入
 public void add(int index, E element) {
         checkPositionIndex(index);
@@ -167,11 +167,191 @@ Node<E> node(int index) {
         }
  }
 当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，不同位置从两端遍历，这样让遍历的查找时间降到最低。
-remove方法与add方法实现类似.
+remove方法与add方法实现类似。
  ```
 
 - **2.3 Set集合**</br>
+ * Set是最简单的一种集合。集合中的对象不按特定的方式排序，并且没有重复对象。 Set接口主要实现了两个实现类。
+ * HashSet类按照哈希算法来存取集合中的对象，存取速度比较快，基于hashMap,底层使用HashMap保存所有元素。
+ * TreeSet类实现了SortedSet接口，能够对集合中的对象进行排序。 
+ * 源码实现及对比
+ ```java
+private transient HashMap<E,Object> map;
+//定义一个Object对象作为HashMap的value
+private static final Object PRESENT = new Object();
 
+相关方法
+iterator() set 中元素进行迭代的迭代器。返回元素的顺序并不是特定的
+size()set 中的元素的数量（set 的容量）
+isEmpty()判断集合为空
+contains()判断集合存在某个元素
+clear()底层调用HashMap的clear方法清除所有的Entry
+插入基于map的put方法
+public boolean add(E e) {
+        return map.put(e, PRESENT)==null;
+}
+
+public V put(K key, V value) {
+    return putVal(hash(key), key, value, false, true);
+}
+
+map的put方法：
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+               boolean evict) {
+    Node<K,V>[] tab; Node<K,V> p; int n, i;
+
+    //确认初始化
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+
+    //如果桶为空，直接插入新元素，也就是entry
+    if ((p = tab[i = (n - 1) & hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    else {
+        Node<K,V> e; K k;
+        //如果冲突，分为三种情况
+        //key相等时让旧entry等于新entry即可
+        if (p.hash == hash &&
+            ((k = p.key) == key || (key != null && key.equals(k))))
+            e = p;
+        //红黑树情况
+        else if (p instanceof TreeNode)
+            e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+        else {
+            //如果key不相等，则连成链表
+            for (int binCount = 0; ; ++binCount) {
+                if ((e = p.next) == null) {
+                    p.next = newNode(hash, key, value, null);
+                    if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        treeifyBin(tab, hash);
+                    break;
+                }
+                if (e.hash == hash &&
+                    ((k = e.key) == key || (key != null && key.equals(k))))
+                    break;
+                p = e;
+            }
+        }
+        if (e != null) { // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
+        }
+    }
+    ++modCount;
+    if (++size > threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
+}
+
+hashset不允许重复的元素加入，但允许元素连成链表，因为只要key的equals方法判断为true时它们是相等的，此时会发生value的替换，因为所有entry的value一样，所以和没有插入时一样的。
+
+TreeSet
+与HashSet是基于HashMap实现一样，TreeSet同样是基于TreeMap实现的。
+TreeMap是一个有序的二叉树，那么同理TreeSet同样也是一个有序的，它的作用是提供有序的Set集合。
+通过源码知道TreeSet基础AbstractSet，实现NavigableSet、Cloneable、Serializable接口
+public class TreeSet<E> extends AbstractSet<E>
+    implements NavigableSet<E>, Cloneable, java.io.Serializable
+{
+    /**
+     * The backing map.
+     */
+    private transient NavigableMap<E,Object> m;
+
+    // Dummy value to associate with an Object in the backing Map
+    private static final Object PRESENT = new Object();
+
+    /**
+     * Constructs a set backed by the specified navigable map.
+     */
+    TreeSet(NavigableMap<E,Object> m) {
+        this.m = m;
+    }
+
+    /**
+     * Constructs a new, empty tree set, sorted according to the
+     * natural ordering of its elements.  All elements inserted into
+     * the set must implement the {@link Comparable} interface.
+     * Furthermore, all such elements must be <i>mutually
+     * comparable</i>: {@code e1.compareTo(e2)} must not throw a
+     * {@code ClassCastException} for any elements {@code e1} and
+     * {@code e2} in the set.  If the user attempts to add an element
+     * to the set that violates this constraint (for example, the user
+     * attempts to add a string element to a set whose elements are
+     * integers), the {@code add} call will throw a
+     * {@code ClassCastException}.
+     */
+    public TreeSet() {
+        this(new TreeMap<E,Object>());
+    }
+}
+public boolean add(E e) {
+        return m.put(e, PRESENT)==null;
+ }
+
+public V put(K key, V value) {
+    Entry<K,V> t = root;
+    if (t == null) {
+    //空树时，判断节点是否为空
+        compare(key, key); // type (and possibly null) check
+
+        root = new Entry<>(key, value, null);
+        size = 1;
+        modCount++;
+        return null;
+    }
+    int cmp;
+    Entry<K,V> parent;
+    // split comparator and comparable paths
+    Comparator<? super K> cpr = comparator;
+    //非空树，根据传入比较器进行节点的插入位置查找
+    if (cpr != null) {
+        do {
+            parent = t;
+            //节点比根节点小，则找左子树，否则找右子树
+            cmp = cpr.compare(key, t.key);
+            if (cmp < 0)
+                t = t.left;
+            else if (cmp > 0)
+                t = t.right;
+                //如果key的比较返回值相等，直接更新值（一般compareto相等时equals方法也相等）
+            else
+                return t.setValue(value);
+        } while (t != null);
+    }
+    else {
+    //如果没有传入比较器，则按照自然排序
+        if (key == null)
+            throw new NullPointerException();
+        @SuppressWarnings("unchecked")
+            Comparable<? super K> k = (Comparable<? super K>) key;
+        do {
+            parent = t;
+            cmp = k.compareTo(t.key);
+            if (cmp < 0)
+                t = t.left;
+            else if (cmp > 0)
+                t = t.right;
+            else
+                return t.setValue(value);
+        } while (t != null);
+    }
+    //查找的节点为空，直接插入，默认为红节点
+    Entry<K,V> e = new Entry<>(key, value, parent);
+    if (cmp < 0)
+        parent.left = e;
+    else
+        parent.right = e;
+        //插入后进行红黑树调整
+    fixAfterInsertion(e);
+    size++;
+    modCount++;
+    return null;
+}    
+```
 - **2.4 Map映射**</br>
 
 
