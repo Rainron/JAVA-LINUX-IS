@@ -61,9 +61,9 @@ public class staticDemo {
 
 #### 2-Java常用数组
 - **2.1 集合框架关联图**</br>
-![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Collections.png)
+![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Collections.jpg)
 * 常用集合
-![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Iterable.png)
+![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Iterable.jpg)
 
 - **2.2 List列表**</br>
 
