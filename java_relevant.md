@@ -72,6 +72,105 @@ public class staticDemo {
  * 次序是List最重要的特点：它保证维护元素特定的顺序。List为Collection添加了许多方法，使得能够向List中间插入与移除元素(这只推 荐LinkedList使用。)一个List可以生成ListIterator,使用它可以从两个方向遍历List,也可以从List中间插入和移除元 素。 
  * ArrayList：由数组实现的List。允许对元素进行快速随机访问，但是向List中间插入与移除元素的速度很慢。ListIterator只应该用来由后向前遍历 ArrayList,而不是用来插入和移除元素。因为那比LinkedList开销要大很多。 
  * LinkedList ：对顺序访问进行了优化，向List中间插入与删除的开销并不大。随机访问则相对较慢。(使用ArrayList代替。)还具有下列方 法：addFirst(), addLast(), getFirst(), getLast(), removeFirst() 和 removeLast(), 这些方法 (没有在任何接口或基类中定义过)使得LinkedList可以当作堆栈、队列和双向队列使用。
+ * 源码实现及对比
+ ```
+ ArrayList
+ 插入
+ public boolean add(E e) {
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        elementData[size++] = e;
+        return true;
+}
+ensureCapacityInternal->ensureExplicitCapacity->grow
+ private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = elementData.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+上述add方法，主要是将e赋值给数组，将数组长度加一，ensureCapacityInternal里面做一些逻辑判断
+Arrays.copyOf(elementData, newCapacity);这行代码非常关键，他是影响ArrayList插入性能的主要因素，当数组下表超过数组长度时会调用这个方法，调用Arrays.copyOf的方法时会重新copy构建一个新的数组,会消耗大量的资源，导致性能变的很差。
+指定插入
+public void add(int index, E element) {
+        rangeCheckForAdd(index);
+  
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        System.arraycopy(elementData, index, elementData, index + 1,
+                         size - index);
+        elementData[index] = element;
+        size++;
+}
+大量copy导致大量的数组移动，导致性能底下。remove方法与add方法实现类似.
+随机访问和遍历
+public E get(int index) {
+        rangeCheck(index);
+        return elementData(index);
+}
+直接指向数组下标位置的元素返回
+
+LinkedList
+内部有两个Node对象，一个指向集合第一个，一个指向最后一个。
+private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+  
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+}
+
+public boolean add(E e) {
+        linkLast(e);
+        return true;
+}
+void linkLast(E e) {
+        final Node<E> l = last;
+        final Node<E> newNode = new Node<>(l, e, null);
+        last = newNode;
+        if (l == null)
+            first = newNode;
+        else
+            l.next = newNode;
+        size++;
+        modCount++;
+}
+普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍.
+指定插入
+public void add(int index, E element) {
+        checkPositionIndex(index);
+  
+        if (index == size)
+            linkLast(element);
+        else
+            linkBefore(element, node(index));
+}
+Node<E> node(int index) {
+        // assert isElementIndex(index);
+        if (index < (size >> 1)) {
+            Node<E> x = first;
+            for (int i = 0; i < index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--)
+                x = x.prev;
+            return x;
+        }
+ }
+当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，不同位置从两端遍历，这样让遍历的查找时间降到最低。
+remove方法与add方法实现类似.
+ ```
+
+
 
 - **2.3 Set集合**</br>
 
