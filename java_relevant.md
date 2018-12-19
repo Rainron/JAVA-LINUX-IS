@@ -60,11 +60,14 @@ public class staticDemo {
   * 声明类不允许被继承。
 
 #### 2-Java常用数组
-- **2.1 List**</br>
+- **2.1 集合框架关联图**</br>
 
 
-- **2.2 Set**</br>
+- **2.2 List**</br>
 
-- **2.3 Map**</br>
+
+- **2.3 Set**</br>
+
+- **2.4 Map**</br>
 
 
