@@ -64,9 +64,12 @@ public class staticDemo {
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Collections.jpg)
 * 常用集合
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Iterable.jpg)
+ * Collection是最基本的集合接口，声明了适用于JAVA集合（只包括Set和List）的通用方法。 Set 和List 都继承了Conllection,Map。
 
 - **2.2 List列表**</br>
-
+ * List的特征是其元素以线性方式存储，集合中可以存放重复对象。
+  * List接口主要实现类包括ArrayList()-LinkedList()
+   * List的随机访问来说，就是只随机来检索位于特定位置的元素。 List 的 get(int index) 方法放回集合中由参数index指定的索引位置的对象，下标从“0” 开始。
 
 - **2.3 Set集合**</br>
 
