@@ -344,8 +344,8 @@ public V put(K key, V value) {
    * TreeMap：基于红黑树数据结构的实现。查看“键”或“键值对”时，它们会被排序(次序由Comparabel或Comparator决定)。TreeMap的特点在 于，你得到的结果是经过排序的。TreeMap是唯一的带有subMap()方法的Map，它可以返回一个子树。
    * WeakHashMao：弱键(weak key)Map，Map中使用的对象也被允许释放: 这是为解决特殊问题设计的。如果没有map之外的引用指向某个“键”，则此“键”可以被垃圾收集器回收。 
    * IdentifyHashMap： 使用==代替equals()对“键”作比较的hash map。专为解决特殊问题而设计。
-###
-这里选取HashMap TreeMap简单概述
+
+## 这里选取HashMap TreeMap简单概述
  
 #### 2.4.1HashMap：
 * 以数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复，不保证元素迭代顺序是按照插入时的顺序，key的hash值是先计算key的hashcode值，然后再进行计算，每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals和hashcode方法。
