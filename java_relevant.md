@@ -170,7 +170,7 @@ Node<E> node(int index) {
 remove方法与add方法实现类似。
  ```
 
-## **2.3 Set集合**</br>
+- **2.3 Set集合**</br>
  * Set是最简单的一种集合。集合中的对象不按特定的方式排序，并且没有重复对象。 Set接口主要实现了两个实现类。
    * HashSet类按照哈希算法来存取集合中的对象，存取速度比较快，基于hashMap,底层使用HashMap保存所有元素。
    * TreeSet类实现了SortedSet接口，能够对集合中的对象进行排序。 
