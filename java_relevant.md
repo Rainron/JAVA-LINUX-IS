@@ -65,11 +65,11 @@ public class staticDemo {
 * 常用集合
 ![](https://rainron.github.io/-JAVA-LINUX-IS/img/java/Iterable.png)
 
-- **2.2 List**</br>
+- **2.2 List列表**</br>
 
 
-- **2.3 Set**</br>
+- **2.3 Set集合**</br>
 
-- **2.4 Map**</br>
+- **2.4 Map映射**</br>
 
 
