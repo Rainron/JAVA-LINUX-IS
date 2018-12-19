@@ -252,38 +252,17 @@ hashset不允许重复的元素加入，但允许元素连成链表，因为只�
 TreeSet
 与HashSet是基于HashMap实现一样，TreeSet同样是基于TreeMap实现的。
 TreeMap是一个有序的二叉树，那么同理TreeSet同样也是一个有序的，它的作用是提供有序的Set集合。
-通过源码知道TreeSet基础AbstractSet，实现NavigableSet、Cloneable、Serializable接口
+通过源码知道TreeSet基础AbstractSet，实现NavigableSet、Cloneable、Serializable接口。
 public class TreeSet<E> extends AbstractSet<E>
     implements NavigableSet<E>, Cloneable, java.io.Serializable
 {
-    /**
-     * The backing map.
-     */
     private transient NavigableMap<E,Object> m;
-
-    // Dummy value to associate with an Object in the backing Map
     private static final Object PRESENT = new Object();
 
-    /**
-     * Constructs a set backed by the specified navigable map.
-     */
     TreeSet(NavigableMap<E,Object> m) {
         this.m = m;
     }
 
-    /**
-     * Constructs a new, empty tree set, sorted according to the
-     * natural ordering of its elements.  All elements inserted into
-     * the set must implement the {@link Comparable} interface.
-     * Furthermore, all such elements must be <i>mutually
-     * comparable</i>: {@code e1.compareTo(e2)} must not throw a
-     * {@code ClassCastException} for any elements {@code e1} and
-     * {@code e2} in the set.  If the user attempts to add an element
-     * to the set that violates this constraint (for example, the user
-     * attempts to add a string element to a set whose elements are
-     * integers), the {@code add} call will throw a
-     * {@code ClassCastException}.
-     */
     public TreeSet() {
         this(new TreeMap<E,Object>());
     }
