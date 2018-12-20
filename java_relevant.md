@@ -1,4 +1,4 @@
-# -java_relevant
+# java_relevant
 ### 部分基于thinkinJava
 ### 目录结构
 - [0. 面向对象概述](#0-面向对象概述)
