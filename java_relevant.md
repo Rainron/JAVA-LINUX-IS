@@ -94,7 +94,9 @@ ensureCapacityInternal->ensureExplicitCapacity->grow
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
 上述add方法，主要是将e赋值给数组，将数组长度加一，ensureCapacityInternal里面做一些逻辑判断。
-Arrays.copyOf(elementData, newCapacity);这行代码非常关键，他是影响ArrayList插入性能的主要因素，当数组下表超过数组长度时会调用这个方法，调用Arrays.copyOf的方法时会重新copy构建一个新的数组,会消耗大量的资源，导致性能变的很差。
+Arrays.copyOf(elementData, newCapacity);这行代码非常关键，他是影响ArrayList插入性能的主要因素，
+当数组下表超过数组长度时会调用这个方法，调用Arrays.copyOf的方法时会重新copy构建一个新的数组
+,会消耗大量的资源，导致性能变的很差。
 指定插入
 public void add(int index, E element) {
         rangeCheckForAdd(index);
@@ -142,7 +144,8 @@ void linkLast(E e) {
         size++;
         modCount++;
 }
-普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍。
+普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，
+同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍。
 指定插入
 public void add(int index, E element) {
         checkPositionIndex(index);
@@ -166,7 +169,8 @@ Node<E> node(int index) {
             return x;
         }
  }
-当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，不同位置从两端遍历，这样让遍历的查找时间降到最低。
+当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，
+则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，不同位置从两端遍历，这样让遍历的查找时间降到最低。
 remove方法与add方法实现类似。
  ```
 
