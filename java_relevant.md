@@ -405,8 +405,67 @@ final Node<K,V> getNode(int hash, Object key) {
   * 2.如果两个对象的hashCode相同，它们并不一定相同(即用equals比较返回false)。
 * 因此为了保证同一个对象，保证在equals相同的情况下hashcode值必定相同，如果重写了equals而未重写hashcode方法，可能就会出现两个没有关系的对象equals相同的（因为equal都是根据对象的特征进行重写的），但hashcode确实不相同的。
 ### 2.4.2TreeMap：
-* 
-```java
+* treeMap在源码中实现NavigableMap接口并且也是基于红黑树的实现。
+* treeMap可以对添加进来的元素进行排序，可以按照默认的排序方式，也可以自己指定排序方式,所以最重要的特点是可排序。
+* 红黑树简单概述
+  * 红黑树顾名思义就是节点是红色或者黑色的平衡二叉树，它通过颜色的约束来维持着二叉树的平衡。
+  * 根节点是黑色，每个节点都只能是红色或者黑色。
+  * 如果一个结点是红的，则它两个子节点都是黑的。也就是说在一条路径上不能出现相邻的两个红色结点。
+  * 从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。
 
+```java
+查看源码中的put()
+public V put(K key, V value) {
+        Entry<K,V> t = root;
+        //根节点为空则设置为新节点
+        if (t == null) {
+            compare(key, key); // type (and possibly null) check
+            root = new Entry<>(key, value, null);
+            size = 1;集合为1
+            modCount++;结构次数修改+1
+            return null;
+        }
+        int cmp;
+        Entry<K,V> parent;
+        // split comparator and comparable paths
+        Comparator<? super K> cpr = comparator;指定比较器
+        if (cpr != null) {
+             do {
+                parent = t;
+                cmp = cpr.compare(key, t.key);
+                if (cmp < 0)//插入的key于当前的key比较小于则查询左子树
+                    t = t.left;
+                else if (cmp > 0)//插入的key于当前的key比较大于则查询右子树
+                    t = t.right;
+                else
+                    return t.setValue(value);//等于则把当前的v设置为插入的v
+            } while (t != null);
+        }
+        else {//默认比较器
+            if (key == null)
+                throw new NullPointerException();
+            @SuppressWarnings("unchecked")
+                Comparable<? super K> k = (Comparable<? super K>) key;
+            do {
+                parent = t;
+                cmp = k.compareTo(t.key);
+                if (cmp < 0)
+                    t = t.left;
+                else if (cmp > 0)
+                    t = t.right;
+                else
+                    return t.setValue(value);
+            } while (t != null);
+        }
+        Entry<K,V> e = new Entry<>(key, value, parent);//最后根据key找到父节点后新建一个节点
+        if (cmp < 0)
+            parent.left = e;//同理如上  根据比较的结果放在根节点的左子树或右子树
+        else
+            parent.right = e;
+        fixAfterInsertion(e);
+        size++;
+        modCount++;
+        return null;
+}
 
 ```
