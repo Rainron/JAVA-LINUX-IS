@@ -170,7 +170,8 @@ Node<E> node(int index) {
         }
  }
 当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，
-则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，不同位置从两端遍历，这样让遍历的查找时间降到最低。
+则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，
+不同位置从两端遍历，这样让遍历的查找时间降到最低。
 remove方法与add方法实现类似。
  ```
 
@@ -256,7 +257,8 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
     return null;
 }
 
-hashset不允许重复的元素加入，但允许元素连成链表，因为只要key的equals方法判断为true时它们是相等的，此时会发生value的替换，因为所有entry的value一样，所以和没有插入时一样的。
+hashset不允许重复的元素加入，但允许元素连成链表，因为只要key的equals方法判断为true时它们是相等的，
+此时会发生value的替换，因为所有entry的value一样，所以和没有插入时一样的。
 
 TreeSet
 与HashSet是基于HashMap实现一样，TreeSet同样是基于TreeMap实现的。
