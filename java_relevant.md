@@ -354,7 +354,7 @@ public V put(K key, V value) {
 
 ### 这里选取HashMap TreeMap简单概述
  
-### 2.4.1HashMap：
+- ### 2.4.1HashMap：
 * 以数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复，不保证元素迭代顺序是按照插入时的顺序，key的hash值是先计算key的hashcode值，然后再进行计算，每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals和hashcode方法。
 * 哈希函数：这个函数的设计好坏会直接影响到哈希表的优劣。
 * 哈希冲突：两个不同的元素，计算出来的实际存储地址一样。
@@ -411,7 +411,7 @@ final Node<K,V> getNode(int hash, Object key) {
   * 1.如果两个对象相同（即用equals比较返回true），那么它们的hashCode值一定要相同。
   * 2.如果两个对象的hashCode相同，它们并不一定相同(即用equals比较返回false)。
 * 因此为了保证同一个对象，保证在equals相同的情况下hashcode值必定相同，如果重写了equals而未重写hashcode方法，可能就会出现两个没有关系的对象equals相同的（因为equal都是根据对象的特征进行重写的），但hashcode确实不相同的。
-### 2.4.2TreeMap：
+- ### 2.4.2TreeMap：
 * treeMap在源码中实现NavigableMap接口并且也是基于红黑树的实现。
 * treeMap可以对添加进来的元素进行排序，可以按照默认的排序方式，也可以自己指定排序方式,所以最重要的特点是可排序。
 * 红黑树简单概述
@@ -477,7 +477,7 @@ public V put(K key, V value) {
 
 ```
 ## 3-Java中的线程
- ### **3.1 进程线程简单概述**</br>
+-  ### **3.1 进程线程简单概述**</br>
 * 进程
   * 进程是资源（CPU、内存等）分配的基本单位，它是程序执行时的一个实例。每个进程都有独立的代码和数据空间（进程上下文），进程间的切换会有较大的开销，一个进程包含1--n个线程。
 * 线程 
