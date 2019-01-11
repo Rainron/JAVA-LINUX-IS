@@ -499,7 +499,7 @@ public V put(K key, V value) {
 * javaAPI层ReentrantLock(重入锁)方法
   * JDK1.5新曾的新增了Lock接口以及他的实现类ReentrantLock(重入锁),它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力。
   * ReentrantLock(): 创建一个ReentrantLock实例 lock(): 获得锁 unlock(): 释放锁 
-  * 
+  * synchronized能够简化代码，快速使用同步，但经过测试，单核及单线程下synchronized与ReentrantLock的数据吞吐量大致相同，而在多核多线程下ReentrantLock的数据吞吐量远远大于synchronized，因此当使用高级的功能或者复杂的业务中建议使用ReentrantLock。
 ```java
 class Test{
     private int account = 0;
