@@ -492,6 +492,7 @@ public V put(K key, V value) {
 * 3.4.1 java中的原生语法
   * synchronized（对象）即有synchronized关键字修饰的语句块。被该关键字修饰的语句块会自动被加上内置锁，从而实现同步
   * synchronized synchronized关键字修饰的方法。 由于java的每个对象都有一个内置锁，当用此关键字修饰方法时，内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态，该线程放置在jvm中的获取锁的线程池中。
+  * 在使用synchronized时候，应尽可能减少synchronized范围，因为线程同步会降低系统的并发性能。
 * 3.4.2 java中的wait()notify()方法（必须在synchronized同步块使用）
   * wait()方法会把当前的锁释放，然后让出CPU，进入等待状态。
   * notify()方法会唤醒一个处于等待该对象锁的线程，然后继续往下执行，直到执行完退出对象锁锁住的区域（synchronized修饰的代码块）后再释放锁。
@@ -519,3 +520,5 @@ class Test{
     }
 }
 ```   
+* 3.4.4 线程本地存储ThreadLocal
+
