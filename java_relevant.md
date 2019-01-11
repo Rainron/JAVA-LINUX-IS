@@ -497,5 +497,25 @@ public V put(K key, V value) {
   * notify()方法会唤醒一个处于等待该对象锁的线程，然后继续往下执行，直到执行完退出对象锁锁住的区域（synchronized修饰的代码块）后再释放锁。
   * 当使用synchronized来修饰某一个共享资源时候，如果线程1在执行synchronized代码，另外一个线程2也要同时执行同一对象的同一synchronized代码时，线程2将要等到线程1执行完毕后才能执行。因此可以使用wait方法和notify方法。在synchronized代码执行期间，线程可以调用对象的wait方法，释放对象锁，进入等待状态，并且可以调用notify方法或notifyAll方法通知正在等待的其他线程，notify方法 仅唤醒一个等待这个对象的线程，并允许它去获得锁，而notifyAll方法唤醒所有等待这个对象的线程，并允许他们去获得锁（并不是让所有唤醒的线程都获得锁，而是让他们去竞争）。
 * javaAPI层ReentrantLock(重入锁)方法
-  * JDK1.5新曾的新增了Lock接口以及他的实现类ReentrantLock(重入锁)
-    
+  * JDK1.5新曾的新增了Lock接口以及他的实现类ReentrantLock(重入锁),它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力。
+  * ReentrantLock(): 创建一个ReentrantLock实例 lock(): 获得锁 unlock(): 释放锁 
+  * 
+```java
+class Test{
+    private int account = 0;
+    private Lock lock = new ReentrantLock();
+    public int getAccount() {
+        return account;
+    }
+
+    public void save(int money) {
+        lock.lock();
+        try{
+            account++;
+        }finally{
+            lock.unlock();
+        }
+        
+    }
+}
+```   
