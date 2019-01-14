@@ -493,11 +493,11 @@ public V put(K key, V value) {
   * synchronized（对象）即有synchronized关键字修饰的语句块。被该关键字修饰的语句块会自动被加上内置锁，从而实现同步
   * synchronized synchronized关键字修饰的方法。 由于java的每个对象都有一个内置锁，当用此关键字修饰方法时，内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态，该线程放置在jvm中的获取锁的线程池中。
   * 在使用synchronized时候，应尽可能减少synchronized范围，因为线程同步会降低系统的并发性能。
-* 3.4.2 java中的wait()notify()方法（必须在synchronized同步块使用）
+* #### 3.4.2 java中的wait()notify()方法（必须在synchronized同步块使用）
   * wait()方法会把当前的锁释放，然后让出CPU，进入等待状态。
   * notify()方法会唤醒一个处于等待该对象锁的线程，然后继续往下执行，直到执行完退出对象锁锁住的区域（synchronized修饰的代码块）后再释放锁。
   * 当使用synchronized来修饰某一个共享资源时候，如果线程1在执行synchronized代码，另外一个线程2也要同时执行同一对象的同一synchronized代码时，线程2将要等到线程1执行完毕后才能执行。因此可以使用wait方法和notify方法。在synchronized代码执行期间，线程可以调用对象的wait方法，释放对象锁，进入等待状态，并且可以调用notify方法或notifyAll方法通知正在等待的其他线程，notify方法 仅唤醒一个等待这个对象的线程，并允许它去获得锁，而notifyAll方法唤醒所有等待这个对象的线程，并允许他们去获得锁（并不是让所有唤醒的线程都获得锁，而是让他们去竞争）。
-* 3.4.3 javaAPI层ReentrantLock(重入锁)方法
+* #### 3.4.3 javaAPI层ReentrantLock(重入锁)方法
   * JDK1.5新曾的新增了Lock接口以及他的实现类ReentrantLock(重入锁),它与使用synchronized方法和快具有相同的基本行为和语义，并且扩展了其能力。
   * ReentrantLock(): 创建一个ReentrantLock实例 lock(): 获得锁 unlock(): 释放锁 
   * synchronized能够简化代码，快速使用同步，但经过测试，单核及单线程下synchronized与ReentrantLock的数据吞吐量大致相同，而在多核多线程下ReentrantLock的数据吞吐量远远大于synchronized，因此当使用高级的功能或者复杂的业务中建议使用ReentrantLock。
@@ -520,10 +520,12 @@ class Test{
     }
 }
 ```   
-* 3.4.4 线程本地存储ThreadLocal
+* #### 3.4.4 线程本地存储ThreadLocal
 * ThreadLocal用于保存某个线程共享变量：对于同一个static ThreadLocal，不同线程只能从中get，set，remove自己的变量，而不会影响其他线程的变量。
+* 线程同步机制采取了时间换空间的方式，访问串行化，对象共享化；而ThreadLocal采取了空间换时间的方式，访问并行化，对象独享化。
 * ThreadLocal.get: 获取ThreadLocal中当前线程共享变量的值。
 * ThreadLocal.set: 设置ThreadLocal中当前线程共享变量的值。
 * ThreadLocal.remove: 移除ThreadLocal中当前线程共享变量的值。
 * ThreadLocal.initialValue: ThreadLocal没有被当前线程赋值时或当前线程刚调用remove方法后调用get方法，返回此方法值。
+
 
