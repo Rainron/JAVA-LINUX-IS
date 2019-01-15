@@ -601,5 +601,14 @@ initialValue()方法会return null
 如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法，我们发现如果没有先set的话，即在map中查找不到对应的存储，则会通过调用setInitialValue方法返回i，而在setInitialValue方法中，有一个语句是T value = initialValue()， 而默认情况下，initialValue方法返回的是null。
 
 ```   
+* #### 3.4.5 使用原子变量实现线程同步
+* 原子操作就是指将读取变量值、修改变量值、保存变量值看成一个整体来操作即-这几种行为要么同时完成，要么都不完成。在java的util.concurrent.atomic包中提供了创建了原子类型变量的工具类，使用该类可以简化线程同步。其中AtomicInteger 表可以用原子方式更新int的值，可用在应用程序中(如以原子方式增加的计数器)，但不能用于替换Integer；可扩展Number，允许那些处理机遇数字类的工具和实用工具进行统一访问。
+  * AtomicInteger类常用方法：
+  * AtomicInteger(int initialValue) : 创建具有给定初始值的新的
+  * AtomicIntegeraddAddGet(int dalta) : 以原子方式将给定值与当前值相加
+  * get() : 获取当前值
+
+
+
 
 
