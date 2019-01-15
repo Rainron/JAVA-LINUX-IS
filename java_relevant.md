@@ -611,7 +611,6 @@ initialValue()方法会return null
   * volatile只对域变量起作用，并不能保证线程安全。 
 -  ### **3.5 线程生命周期**</br>
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/threadStatus.png)
-创建、就绪、运行、阻塞、终止。
 * 创建状态
   * 当程序使用new关键字创建了一个线程之后，该线程就处于新建状态，此时它和其他Java对象一样，仅仅由Java虚拟机为其分配了内存，并初始化了其成员变量
 值。此时的线程对象没有表现出任何线程的动态特征，程序也不会执行线程的线程执行体。
