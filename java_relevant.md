@@ -609,7 +609,8 @@ initialValue()方法会return null
   * 使用volatile修饰域变量相当于告诉虚拟机可能会被其他线程更新，因此每次使用该域变量都要同步到内存，从内存中读取，而不是直接使用寄存器中的值。 
   * volatile不会提供原子操作，他不能用来修饰final类型的变量。 
   * volatile只对域变量起作用，并不能保证线程安全。 
-
+-  ### **3.5 线程生命周期**</br>
+![](https://rainron.github.io/JAVA-LINUX-IS/img/java/threadStatus.png)
 
 
 
