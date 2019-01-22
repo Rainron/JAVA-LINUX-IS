@@ -579,8 +579,11 @@ ThreadLocalMap getMap(Thread t) {
 
 可以发现，每个线程中都有一个ThreadLocalMap数据结构,当执行set方法时
 其值是保存在当前线程的threadLocals变量中，当执行set方法中，是从当前线程的threadLocals变量获取。
-同时在get方法中，get()→t.threadLocals→Entry，在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，这个threadLocals就是用来存储实际的变量副本的，键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。
-因此在初始化时，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。
+同时在get方法中，get()→t.threadLocals→Entry，
+在每个线程Thread内部有一个ThreadLocal.ThreadLocalMap类型的成员变量threadLocals，
+这个threadLocals就是用来存储实际的变量副本的，键值为当前ThreadLocal变量，value为变量副本（即T类型的变量）。
+因此在初始化时，当通过ThreadLocal变量调用get()方法或者set()方法，就会对Thread类中的threadLocals进行初始化，
+并且以当前ThreadLocal变量为键值，以ThreadLocal要保存的副本变量为value，存到threadLocals。
 
 private T setInitialValue() {
         T value = initialValue();
@@ -594,7 +597,10 @@ private T setInitialValue() {
 }
 
 initialValue()方法会return null
-如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法，我们发现如果没有先set的话，即在map中查找不到对应的存储，则会通过调用setInitialValue方法返回i，而在setInitialValue方法中，有一个语句是T value = initialValue()， 而默认情况下，initialValue方法返回的是null。
+如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法，
+我们发现如果没有先set的话，即在map中查找不到对应的存储，则会通过调用setInitialValue方法返回i，
+而在setInitialValue方法中，有一个语句是T value = initialValue()， 
+而默认情况下，initialValue方法返回的是null。
 
 ```   
 * #### 3.4.5 使用原子变量实现线程同步
