@@ -59,6 +59,7 @@
      * 1、利用周期性的发布机制（CRL）
      * 2、在线查询机制（OCSP）
  * 密钥备份和恢复
+ ![](https://rainron.github.io/JAVA-LINUX-IS/img/is/keybackuprecover.png)
  * 自动更新密钥
  * 密钥历史档案
  * 交叉认证
