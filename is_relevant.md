@@ -73,6 +73,15 @@
 团体之间必须进行安全通信。
  * 时间戳</br>
   ![](https://rainron.github.io/JAVA-LINUX-IS/img/is/timestamp.png)
+ * 客户端软件
+   * 自动查询证书“黑名单”（CRL），实现双向身份认证
+   * 对传输信息自动加/解密，保证信息的私密性
+   * 证书恢复功能
+   * 实现证书生命周期的自动管理
+   * 多种证书存放方式
+* PKI的相关功能</br>
+![](https://rainron.github.io/JAVA-LINUX-IS/img/is/pkiAPI.png)
+
 
 
 
