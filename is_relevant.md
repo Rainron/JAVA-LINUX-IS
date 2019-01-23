@@ -40,6 +40,10 @@
     * SM4 DES 
   * 双钥体制(非对称密钥)
     * SM2 RSA
+    
+#### * 数据加解密/身份认证流程
+![](https://rainron.github.io/JAVA-LINUX-IS/img/is/endeypt.png)
+
 
 
 
