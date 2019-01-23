@@ -81,6 +81,14 @@
    * 多种证书存放方式
 * PKI的相关功能</br>
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/is/pkiAPI.png)
+#### * PKI体系结构概述
+  * PKI体系结构一般由多种认证机构与各种终端实体组成。
+![](https://rainron.github.io/JAVA-LINUX-IS/img/is/pkiSystem.png)
+  * PPA（Policy Approval）是一个大PKI的根CA，如一个国家或一个地域性的CA。
+  * PCA（Pllicy Certificate Authority）是PAA下设的政策行CA，如行业CA等。
+  * CA（Certificate Authority）是指一般操作CA。
+  * ORA(Online Registration Authority)即RA，在线工作的申请注册机构最终的证书用户实体EE（End Entity）
+
 
 
 
