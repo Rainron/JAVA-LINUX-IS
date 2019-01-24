@@ -1,6 +1,7 @@
 # java_relevant
 ### 部分基于thinkinJava
 ### 部分基于清华大学许斌教授授课内容
+### 部分基于深入了解java虚拟机
 ### 目录结构
 ### - [0. 面向对象概述](#0-面向对象概述)
 ### - [1.Static Final 关键字](#1-Static_Final关键字)
@@ -605,7 +606,7 @@ initialValue()方法会return null
 ```   
 * #### 3.4.5 使用原子变量实现线程同步
 * 原子操作就是指将读取变量值、修改变量值、保存变量值看成一个整体来操作即-这几种行为要么同时完成，要么都不完成。在java的util.concurrent.atomic包中提供了创建了原子类型变量的工具类，使用该类可以简化线程同步。
-其中AtomicInteger 表可以用原子方式更新int的值，可用在应用程序中(如以原子方式增加的计数器)，但不能用于替换Integer；可扩展Number，允许那些处理机遇数字类的工具和实用工具进行统一访问。
+其中AtomicInteger表示可以用原子方式更新int的值，可用在应用程序中(如以原子方式增加的计数器)，但不能用于替换Integer；可扩展Number，允许那些处理机遇数字类的工具和实用工具进行统一访问。
   * AtomicInteger类常用方法：
   * AtomicInteger(int initialValue) : 创建具有给定初始值的新的
   * AtomicIntegeraddAddGet(int dalta) : 以原子方式将给定值与当前值相加
@@ -679,7 +680,39 @@ initialValue()方法会return null
     * 交换（Swap）。
     * 比较并交换（Compare-and-Swap，下文称CAS）。
     * 加载链接/条件存储（Load-Linked/Store-Conditional，下文称LL/SC）。
-
+* 这些指令中就包括非常著名的CAS指令（Compare-And-Swap比较并交换）
+* CAS指令需要有3个操作数，分别是内存位置（在Java中可以简单理解为变量的内存地址，用V表示）、旧的预期值（用A表示）和新值（用B表示）。CAS指令执行时，当且仅当V符合旧预期值A时，处理器用新值B更新V的值，否则它就不执行更新，但是无论是否更新了V的值，都会返回V的旧值，上述的处理过程是一个原子操作。
+* 在上述线程同步中也介绍了使用原子操作来进行线程的同步-AtomicInteger类 
+```java 
+ public class test3 {
+	public static volatile int num = 10;
+	public static AtomicInteger ai = new AtomicInteger();
+	public static void main(String[] args) {
+		
+		Thread[] threads = new Thread[10];
+		
+		for(int i=0;i<10;i++){
+			threads[i] = new Thread(new Runnable(){
+				@Override
+				public void run() {
+					for(int i=0;i<100;i++){
+						++num;
+						ai.incrementAndGet();
+					}
+				}
+				
+			});
+			threads[i].start();
+		}
+		while(Thread.activeCount()>1) Thread.yield();
+		System.out.println(num);
+		System.out.println(ai.get());
+	}
+}
+```
+* 上述代码中，当我们在多线程下时候，自增变量，多次测试返回来的数据与我们预期的数据都不一样，并且小于期望数，这就是多线程引发的数据变动问题。
+* 而我们使用带有原子操作的AtomicInteger类的incrementAndGet();方法，多次测试返回来的数据一致并无误。
+* 在JDK1.8后此功能被被写到了Unsafe类里，AtomicInteger类只剩一行unsafe.getAndAddInt(this, valueOffset, 1) + 1;，但是实现的逻辑是没变的），incrementAndGet()方法在一个无限循环中，不断尝试将一个比当前值大1的新值赋给自己。如果失败了，那说明在执行“获取-设置”操作的时候值已经有了修改，于是再次循环进行下一次操作，直到设置成功为止。
   
   
 
