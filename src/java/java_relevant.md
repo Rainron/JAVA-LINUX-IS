@@ -751,3 +751,9 @@ initialValue()方法会return null
 ####  * java程序运行时数据图
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/jvmMemory1.jpg)
 
+ -  ### **4.3 类加载机制**</br> 
+ ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/class.jpg)
+ 一、虚拟机类概加载概述
+虚拟机将描述类的Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以直接被虚拟机使用的Java类型，Java语言支持动态加载和动态连接。
+ 
+
