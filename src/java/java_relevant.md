@@ -752,8 +752,11 @@ initialValue()方法会return null
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/jvmMemory1.jpg)
 
  -  ### **4.3 类加载机制**</br> 
+  * 一般来说当Java文件被编译为class文件后，就可以通过(java ClassName)来执行你的Java程序，JRE的类加载器从硬盘中读取class文件，载入到系统分配给JVM的内存区域–运行数据区（Runtime Data Areas). 然后执行引擎解释或者编译类文件，转化成特定CPU的机器码，CPU执行机器码，至此完成整个过程。
+  * 那么编译后的类文件是如何加载的呢？
  ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/class.jpg)
- 一、虚拟机类概加载概述
-虚拟机将描述类的Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以直接被虚拟机使用的Java类型，Java语言支持动态加载和动态连接。
+  * 虚拟机类概加载概述
+    * 虚拟机将描述类的Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以直接被虚拟机使用的Java类型，Java语言支持动态加载和动态连接。
+    
  
 
