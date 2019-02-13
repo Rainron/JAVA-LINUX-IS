@@ -755,6 +755,7 @@ initialValue()方法会return null
   * 一般来说当Java文件被编译为class文件后，就可以通过(java ClassName)来执行你的Java程序，JRE的类加载器从硬盘中读取class文件，载入到系统分配给JVM的内存区域–运行数据区（Runtime Data Areas). 然后执行引擎解释或者编译类文件，转化成特定CPU的机器码，CPU执行机器码，至此完成整个过程。
   * 那么编译后的类文件是如何被加载及使用的呢？
  ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/class.jpg)
+  * 类的一生就是从被加载到虚拟机内存开始，直到卸载出内存为止。整个生命周期中，一个类经历了加载（Loading）、验证（Verfication）、准备（Preparation）、解析（Resolution）、初始化（Initialization）、使用（Using）和卸载（Unloading）等七个阶段。其中，验证、准备、解析三个阶段称为连接（Linking）。
   * 虚拟机类概加载概述
     * 虚拟机将描述类的Class文件加载到内存，并对数据进行校验，转换解析和初始化，最终形成可以直接被虚拟机使用的Java类型，Java语言支持动态加载和动态连接。
   * 加载步骤
