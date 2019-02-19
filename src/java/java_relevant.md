@@ -61,7 +61,7 @@ public class staticDemo {
 
 ## 2-Java常用数组
 - ### **2.1 集合框架关联图**</br>
-
+![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Collections.jpg)
 * 常用集合
  * Collection是最基本的集合接口，声明了适用于JAVA集合（只包括Set和List）的通用方法。 Set 和List 都继承了Conllection,Map。
 
