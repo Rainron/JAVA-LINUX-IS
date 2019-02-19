@@ -233,7 +233,7 @@ public V put(K key, V value) {
     return putVal(hash(key), key, value, false, true);
 }
 
-map的put方法：
+map的put方法：1.7版本比1.8的版本比较好阅读理解
 final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                boolean evict) {
     Node<K,V>[] tab; Node<K,V> p; int n, i;
@@ -378,7 +378,7 @@ public V put(K key, V value) {
 ## **2.4 Map映射**</br>
  * **Map 是一种把键对象和值对象映射的集合,它的每一个元素都包含一对键对象和值对象**。
  * 标准的Java类库中包含了几种不同的Map：HashMap, TreeMap, LinkedHashMap, WeakHashMap, IdentityHashMap。它们都有同样的基本接口Map，但是行为、效率、排序策略、保存对象的生命周期和判定“键”等价的策略等各不相同。
-   * **HashMap**：就是使用对象的hashCode()进行快速查询的。此方法能够显着提高性能，同时基于散列表的实现。插入和查询“键值对”的开销是固定的。可以通过构造器设置容量capacity和负载因子load factor，以调整容器的性能。
+   * **HashMap**：就是使用对象的hashCode()进行快速查询的。此方法能够显著提高性能，同时基于散列表的实现。插入和查询“键值对”的开销是固定的。可以通过构造器设置容量capacity和负载因子load factor，以调整容器的性能。
    * **LinkedHashMap**：类似于HashMap，但是迭代遍历它时，取得“键值对”的顺序是其插入次序，或者是最近最少使用(LRU)的次序。只比HashMap慢一点。而在迭代访问时发而更快，因为它使用链表维护内部次序。
    * **TreeMap**：基于红黑树数据结构的实现。查看“键”或“键值对”时，它们会被排序(次序由Comparabel或Comparator决定)。TreeMap的特点在于，你得到的结果是经过排序的。TreeMap是唯一的带有subMap()方法的Map，它可以返回一个子树。
    * **WeakHashMao**：弱键(weak key)Map，Map中使用的对象也被允许释放: 这是为解决特殊问题设计的。如果没有map之外的引用指向某个“键”，则此“键”可以被垃圾收集器回收。 
@@ -386,7 +386,7 @@ public V put(K key, V value) {
 
 ### 这里选取HashMap TreeMap简单概述
  
-- ### ** 2.4.1HashMap：
+- ### **2.4.1HashMap：
 * **以数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复，不保证元素迭代顺序是按照插入时的顺序，key的hash值是先计算key的hashcode值，然后再进行计算，每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals和hashcode方法。**
 * **哈希函数**：这个函数的设计好坏会直接影响到哈希表的优劣。
 * **哈希冲突**：两个不同的元素，计算出来的实际存储地址一样。
@@ -417,7 +417,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
 * 判断数组该位置处的元素是否刚好就是我们要找的，如果不是，走第三步
 * 判断该元素类型是否是 TreeNode，如果是，用红黑树的方法取数据，如果不是，走第四步
 * 遍历链表，直到找到相等(==或equals)的 key
-get()
+get()根据key获取value
 final Node<K,V> getNode(int hash, Object key) {
         Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
         if ((tab = table) != null && (n = tab.length) > 0 &&
