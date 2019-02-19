@@ -386,7 +386,7 @@ public V put(K key, V value) {
 
 ### 这里选取HashMap TreeMap简单概述
  
-- ### **2.4.1HashMap：
+- ### **2.4.1HashMap**：
 * **以数组方式存储key/value，线程非安全，允许null作为key和value，key不可以重复，value允许重复，不保证元素迭代顺序是按照插入时的顺序，key的hash值是先计算key的hashcode值，然后再进行计算，每次容量扩容会重新计算所以key的hash值，会消耗资源，要求key必须重写equals和hashcode方法。**
 * **哈希函数**：这个函数的设计好坏会直接影响到哈希表的优劣。
 * **哈希冲突**：两个不同的元素，计算出来的实际存储地址一样。
