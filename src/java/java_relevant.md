@@ -69,11 +69,13 @@ public class staticDemo {
  * List接口主要实现类包括ArrayList()-LinkedList()。
  * 次序是List最重要的特点：它保证维护元素特定的顺序。List为Collection添加了许多方法，使得能够向List中间插入与移除元素(这只推 荐LinkedList使用。)一个List可以生成ListIterator,使用它可以从两个方向遍历List,也可以从List中间插入和移除元素。 
    * **ArrayList**：由数组实现的List。允许对元素进行快速随机访问，但是向List中间插入与移除元素的速度很慢。
-   * **LinkedList** ：对顺序访问进行了优化，向List中间插入与删除的开销并不大。随机访问则相对较慢。(使用ArrayList代替。)还具有下列方法：addFirst(),addLast(), getFirst(), getLast(), removeFirst() 和 removeLast(), 这些方法 使得LinkedList可以当作堆栈、队列和双向队列使用。
+   * **LinkedList** ：对顺序访问进行了优化，向List中间插入与删除的开销并不大。随机访问则相对较慢。还具有下列方法：addFirst(),addLast(), getFirst(), getLast(), removeFirst() 和 removeLast(), 这些方法使得LinkedList可以当作堆栈、队列和双向队列使用。
  * 源码实现及对比(版本JDK1.8)
  ```java
  ArrayList
  插入
+ private static final int DEFAULT_CAPACITY = 10; 默认大小
+ 
  public boolean add(E e) {
         ensureCapacityInternal(size + 1);  // Increments modCount!!
         elementData[size++] = e;
@@ -92,9 +94,12 @@ ensureCapacityInternal->ensureExplicitCapacity->grow
         elementData = Arrays.copyOf(elementData, newCapacity);
     }
 上述add方法，主要是将e赋值给数组，将数组长度加一，ensureCapacityInternal里面做一些逻辑判断。
-Arrays.copyOf(elementData, newCapacity);这行代码非常关键，他是影响ArrayList插入性能的主要因素，
-当数组下表超过数组长度时会调用这个方法，调用Arrays.copyOf的方法时会重新copy构建一个新的数组
-,会消耗大量的资源，导致性能变的很差。
+添加元素时使用 ensureCapacityInternal() 方法来保证容量足够，如果不够时，需要使用 grow() 方法进行扩容，
+新容量的大小为 oldCapacity + (oldCapacity >> 1)，也就是旧容量的 1.5 倍。
+扩容操作需要调用 Arrays.copyOf() 把原数组整个复制到新数组中，这个操作代价很高，会消耗大量的资源，导致性能变的很差。
+因此最好在创建 ArrayList 对象时就指定大概的容量大小，减少扩容操作的次数。
+
+
 指定插入
 public void add(int index, E element) {
         rangeCheckForAdd(index);
@@ -112,6 +117,35 @@ public E get(int index) {
         return elementData(index);
 }
 直接指向数组下标位置的元素返回。
+
+public E remove(int index) {
+    rangeCheck(index);
+    modCount++;
+    E oldValue = elementData(index);
+    int numMoved = size - index - 1;
+    if (numMoved > 0)
+        System.arraycopy(elementData, index+1, elementData, index, numMoved);
+    elementData[--size] = null; // clear to let GC do its work
+    return oldValue;
+}
+调用 System.arraycopy() 将 index+1 后面的元素都复制到 index 位置上，
+该操作的时间复杂度为 O(N)，可以看出 ArrayList 删除元素的代价是非常高的。
+
+Vector
+
+1.它的实现与 ArrayList 类似，但是使用了 synchronized 进行同步。
+2.Vector 是同步的，因此开销就比 ArrayList 要大，访问速度更慢，
+最好使用 ArrayList 而不是 Vector，因为同步操作完全可以由程序员自己来控制；
+3.Vector 每次扩容请求其大小的 2 倍空间，而 ArrayList 是 1.5 倍。
+4.可以使用 Collections.synchronizedList(); 得到一个线程安全的 ArrayList。
+List<String> list = new CopyOnWriteArrayList<>();
+写操作在一个复制的数组上进行，读操作还是在原始数组中进行，读写分离，互不影响。
+写操作需要加锁，防止并发写入时导致写入数据丢失。
+写操作结束之后需要把原始数组指向新的复制数组。
+CopyOnWriteArrayList 在写操作的同时允许读操作，大大提高了读操作的性能，因此很适合读多写少的应用场景。
+
+
+
 
 LinkedList
 内部有两个Node对象，一个指向集合第一个，一个指向最后一个。
@@ -172,6 +206,7 @@ Node<E> node(int index) {
 不同位置从两端遍历，这样让遍历的查找时间降到最低。
 remove方法与add方法实现类似。
  ```
+
 
 - ### **2.3 Set集合**</br>
  * Set是最简单的一种集合。集合中的对象**不按特定的方式排序，并且没有重复对象**。 Set接口主要实现了两个实现类。
