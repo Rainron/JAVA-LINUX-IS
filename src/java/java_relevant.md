@@ -62,7 +62,7 @@ public class staticDemo {
 ## 2-Java常用数组
 - ### **2.1 集合框架关联图**</br>
 ![](https://rainron.github.io/JAVA-LINUX-IS/img/java/Collections.jpg)
- * Java 集合框架主要包括两种类型的容器，一种是集合（Collection），存储一个元素集合，另一种是图（Map），存储键/值对映射。Collection 接口又有 3 种子类型，List、Set 和 Queue，再下面是一些抽象类，最后是具体实现类，常用的有 ArrayList、LinkedList、HashSet、LinkedHashSet、HashMap、LinkedHashMap 等等。
+ * Java 集合框架主要包括两种类型的容器，一种是集合（Collection），存储一个元素集合，另一种是图（Map），存储键/值对映射。Collection 接口又有 3 种子类型，List、Set 和 Queue，再下面是一些抽象类，最后是具体实现类，常用的有 ArrayList、LinkedList、HashSet、LinkedHashSet、HashMap、TreeMap、LinkedHashMap 等等。
 
 - **2.2 List列表**</br>
  * List的特征是其元素**以线性方式存储，列表中可以存放重复对象**。
@@ -179,6 +179,10 @@ void linkLast(E e) {
 普通的add会调用linkLast,linkdLast方法内部会新建一个Node对象，将要存储的值放入node中，
 同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍。
 指定插入
+
+
+
+ 
 public void add(int index, E element) {
         checkPositionIndex(index);
   
@@ -187,6 +191,7 @@ public void add(int index, E element) {
         else
             linkBefore(element, node(index));
 }
+
 Node<E> node(int index) {
         // assert isElementIndex(index);
         if (index < (size >> 1)) {
@@ -204,7 +209,13 @@ Node<E> node(int index) {
 当需要插入的位置为集合大小时，可以直接插入集合尾部，否则，
 则需要找到指定位置的下标然后修改他们next、prev的指向，这里会有一个遍历，JDK对其做了优化，
 不同位置从两端遍历，这样让遍历的查找时间降到最低。
-remove方法与add方法实现类似。
+get方法remove方法与add方法实现类似。
+public E get(int index) {
+        checkElementIndex(index);
+        return node(index).item;
+}
+get()会检查索引是否大于等0并是否小于原Node数组大小  是则抛出IndexOutOfBoundsException
+
  ```
 
 
@@ -238,7 +249,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                boolean evict) {
     Node<K,V>[] tab; Node<K,V> p; int n, i;
 
-    //初始化数组长度
+    //初始化数组长度 table 的容量大小，默认为 16。需要注意的是 capacity 必须保证为 2 的 n 次方。
     if ((tab = table) == null || (n = tab.length) == 0)
         n = (tab = resize()).length;
 
@@ -283,6 +294,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
     }
     //假如插入这个值导致 size 已经超过了阈值，需要进行扩容
     //resize() 方法用于初始化数组或数组扩容，每次扩容后，容量为原来的 2 倍，并进行数据迁移。
+    ，需要注意的是，扩容操作同样需要把 oldTable 的所有键值对重新插入 newTable 中，因此这一步是很费时的。
     ++modCount;
     if (++size > threshold)
         resize();
