@@ -294,7 +294,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
     }
     //假如插入这个值导致 size 已经超过了阈值，需要进行扩容
     //resize() 方法用于初始化数组或数组扩容，每次扩容后，容量为原来的 2 倍，并进行数据迁移。
-    ，需要注意的是，扩容操作同样需要把 oldTable 的所有键值对重新插入 newTable 中，因此这一步是很费时的。
+    //，需要注意的是，扩容操作同样需要把 oldTable 的所有键值对重新插入 newTable 中，因此这一步是很费时的。
     ++modCount;
     if (++size > threshold)
         resize();
@@ -428,7 +428,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
 * 计算 key 的 hash 值，根据 hash 值找到对应数组下标: hash & (length-1)
 * 判断数组该位置处的元素是否刚好就是我们要找的，如果不是，走第三步
 * 判断该元素类型是否是 TreeNode，如果是，用红黑树的方法取数据，如果不是，走第四步
-* 遍历链表，直到找到相等(==或equals)的 key
+* 遍历链表，直到找到相等的hash相等及等价的key
 get()根据key获取value
 final Node<K,V> getNode(int hash, Object key) {
         Node<K,V>[] tab; Node<K,V> first, e; int n; K k;
@@ -531,8 +531,8 @@ public V put(K key, V value) {
 * 扩展java.lang.Thread类以及实现java.lang.Runnable接口及重写它们中的run方法。
 * 大多数会使用实现Runnable接口来创建线程，原因在于，java单继承语法的限制，如果使用继承Thread类，则后期代码重构及解耦可能会遇到很多问题。并且Runnable与其相比有比较大的优势，多个线程可以共享及处理同一数据，代码可读性扩展性较高等。
 -  ### **3.3 线程同步与互斥**</br>
-* 为什么要线程同步，因为在多线程环境下，多数线程共享同一数据或资源的时候，如果不进行同步，则会引发很严重的问题，比如如果这些线程中既有读又有写操作时，就会导致变量值或对象的状态出现混乱，从而导致程序异常。同步就是协同步调，按预定的先后次序进行运行。线程同步是指多线程通过特定的设置来控制线程之间的执行顺序（即所谓的同步）也可以说是在线程之间通过同步建立起执行顺序的关系。
-* 线程互斥表示，在多线程下共享某一数据及资源时候，同一时刻只允许一个线程进行访问使用。
+* 为什么要**线程同步**，因为在多线程环境下，多线程共享同一数据或资源的时候，如果不进行同步，则会引发很严重的问题，比如如果这些线程中既有读又有写操作时，就会导致变量值或对象的状态出现混乱，从而导致程序异常。同步就是协同步调，按预定的先后次序进行运行。线程同步是指多线程通过特定的设置来控制线程之间的执行顺序（即所谓的同步）也可以说是在线程之间通过同步建立起执行顺序的关系。
+* **线程互斥**表示，在多线程下共享某一数据及资源时候，同一时刻只允许一个线程进行访问使用。
 -  ### **3.4 线程同步方法**</br>
 * #### 3.4.1 java中的原生语法
   * **synchronized**（对象）即有synchronized关键字修饰的语句块。被该关键字修饰的语句块会自动被加上内置锁，从而实现同步
@@ -547,23 +547,39 @@ public V put(K key, V value) {
   * ReentrantLock(): 创建一个ReentrantLock实例 lock(): 获得锁 unlock(): 释放锁 
   * synchronized能够简化代码，快速使用同步，但经过测试，单核及单线程下synchronized与ReentrantLock的数据吞吐量大致相同，而在多核多线程下ReentrantLock的数据吞吐量远远大于synchronized，因此当使用高级的功能或者复杂的业务中建议使用ReentrantLock。
 ```java
-class Test{
-    private int account = 0;
+public class LockDemo implements Runnable {
+
     private Lock lock = new ReentrantLock();
-    public int getAccount() {
-        return account;
+    private int tickets = 1000;
+
+    @Override
+    public void run() {
+        while (true) {
+            lock.lock(); // 获取锁
+            try {
+                if (tickets > 0) {
+                    Thread.sleep(100);
+                    System.out.println(Thread.currentThread().getName() + " " + tickets--);
+                } else {
+                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                lock.unlock(); // 释放锁
+            }
+        }
     }
 
-    public void save(int money) {
-        lock.lock();
-        try{
-            account++;
-        }finally{
-            lock.unlock();
+    public static void main(String[] args) {
+        LockDemo lk = new LockDemo();
+        for (int i = 0; i < 10; i++) {
+            Thread thread = new Thread(lk, "thread-" + i);
+            thread.start();
         }
-        
     }
 }
+模拟10个售票站进行售票，在这里10个线程不停阻塞获取Lock来进行售票释放Lock，但总是能够确保线程同步并且数据安全。
 ```   
 * #### 3.4.4 线程本地存储ThreadLocal
 * **ThreadLocal**用于保存某个线程共享变量：对于同一个static ThreadLocal，不同线程只能从中get，set，remove自己的变量，而不会影响其他线程的变量。
