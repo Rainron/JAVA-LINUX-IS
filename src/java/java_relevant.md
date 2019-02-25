@@ -737,6 +737,7 @@ new Thread(new Runnable(){
 			System.out.println(name+":methoding");
 			synchronized(o2){
 				method();
+				System.out.println(name+":methoded");
 			}
 		}
 
@@ -758,6 +759,7 @@ new Thread(new Runnable(){
 			}
 			synchronized(o1){
 				method();
+				System.out.println(name+":methoded");
 			}
 		}
 
