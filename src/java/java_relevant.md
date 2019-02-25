@@ -725,7 +725,7 @@ Object o2 = new Object();
 new Thread(new Runnable(){
 
 	public void run(){
-		Thread name = Thread.currentThread();
+		Thread name = Thread.currentThread().getName();
 		synchronized(o1){
 			method();
 			System.out.println(name+":method");
@@ -747,7 +747,7 @@ new Thread(new Runnable(){
 new Thread(new Runnable(){
 
 	public void run(){
-		Thread name = Thread.currentThread();
+		Thread name = Thread.currentThread().getName();
 		synchronized(o2){
 			method();
 			System.out.println(name+":method");
