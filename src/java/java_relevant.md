@@ -713,8 +713,66 @@ initialValue()方法会return null
 * **死锁**
   * 当一个线程永远地持有一个锁，并且其他线程都尝试去获得这个锁时，那么它们将永远被阻塞。
   * 例如，线程A中持有了方法1中的锁，在里面执行功能需要获取线程B持有方法2的锁，线程B中执行功能需要获取线程C持有方法3的锁，如此反复，所有线程都在阻塞，动弹不得。
+```java 
+public class Threadtest {
+	
+static int count = 0;
+public static void main(String[] args) {
+
+Object o1 = new Object();
+Object o2 = new Object();
+
+new Thread(new Runnable(){
+
+	public void run(){
+		Thread name = Thread.currentThread();
+		synchronized(o1){
+			method();
+			System.out.println(name+":method");
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.println(name+":methoding");
+			synchronized(o2){
+				method();
+			}
+		}
+
+	}
+}).start();
+
+new Thread(new Runnable(){
+
+	public void run(){
+		Thread name = Thread.currentThread();
+		synchronized(o2){
+			method();
+			System.out.println(name+":method");
+			try {
+				Thread.sleep(300);
+				System.out.println(name+":methoding");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			synchronized(o1){
+				method();
+			}
+		}
+
+	}
+}).start();
+}
+
+public static void method(){
+System.out.println("count:"+count);
+++count;
+}
+}
+```
   * 如果您已经持有一个资源，请避免锁定另一个资源。如果只使用一个对象锁，则几乎不可能出现死锁情况，比如以下代码对上边的循环嵌套部分进行修改，则避免了死锁的情况。
-  * 明确锁定的部分代码。
+  * 明确锁定的部分代码而且避免嵌套锁。
   * 避免无限期等待，设置等待的最大时间来避免这种情况。
   * 使用死锁状态检测。
 * **调度** 
