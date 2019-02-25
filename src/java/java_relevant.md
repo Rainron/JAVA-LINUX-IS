@@ -667,6 +667,9 @@ initialValue()方法会return null
 而在setInitialValue方法中，有一个语句是T value = initialValue()， 
 而默认情况下，initialValue方法返回的是null。
 
+使用ThreadLocal的典型场景正如上面的数据库连接管理，线程会话管理等场景，
+只适用于独立变量副本的情况，如果变量为全局共享的，则不适用在高并发下使用。
+
 ```   
 * #### 3.4.5 使用原子变量实现线程同步
 * **原子操作**就是指将读取变量值、修改变量值、保存变量值看成一个整体来操作即-这几种行为要么同时完成，要么都不完成。在java的util.concurrent.atomic包中提供了创建了原子类型变量的工具类，使用该类可以简化线程同步。
