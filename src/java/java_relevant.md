@@ -530,6 +530,33 @@ public V put(K key, V value) {
 -  ### **3.2 创建线程的方法**</br>
 * 扩展java.lang.Thread类以及实现java.lang.Runnable接口及重写它们中的run方法。
 * 大多数会使用实现Runnable接口来创建线程，原因在于，java单继承语法的限制，如果使用继承Thread类，则后期代码重构及解耦可能会遇到很多问题。并且Runnable与其相比有比较大的优势，多个线程可以共享及处理同一数据，代码可读性扩展性较高等。
+* Executor 管理多个异步任务的执行，而无需程序员显式地管理线程的生命周期。这里的异步是指多个任务的执行互不干扰，不需要进行同步操作。
+```java
+public static void main(String[] args) {
+	ExecutorService threadPool = Executors.newFixedThreadPool(2);
+
+	for(int i=0;i<5;i++){
+		Runnable runn = new Runnable(){
+			public void run(){
+				Thread t = Thread.currentThread();
+				System.out.println(t+":正在执行任务");
+				try{
+					Thread.sleep(3000);
+					System.out.println(t+":运行任务完毕");
+				}catch(InterruptedException e){
+					System.out.println("线程被中断了");
+				}
+			}
+		};
+		threadPool.execute(runn);
+	}
+	//shutdown()当线程池所有任务执行完毕后停止
+	//shutdownNow()立即中断所有正在运行的线程并停止线程池
+
+	threadPool.shutdownNow();
+	System.out.println("停止线程池");
+}
+```
 -  ### **3.3 线程同步与互斥**</br>
 * 为什么要**线程同步**，因为在多线程环境下，多线程共享同一数据或资源的时候，如果不进行同步，则会引发很严重的问题，比如如果这些线程中既有读又有写操作时，就会导致变量值或对象的状态出现混乱，从而导致程序异常。同步就是协同步调，按预定的先后次序进行运行。线程同步是指多线程通过特定的设置来控制线程之间的执行顺序（即所谓的同步）也可以说是在线程之间通过同步建立起执行顺序的关系。
 * **线程互斥**表示，在多线程下共享某一数据及资源时候，同一时刻只允许一个线程进行访问使用。
