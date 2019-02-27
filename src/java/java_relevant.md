@@ -994,4 +994,60 @@ value在准备阶段过后的初始值为0而不是123,而把value赋值的putst
  -  ### **5.1 什么是反射**</br>
  *  JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为java语言的反射机制。
  * 简单来讲就是动态获取一个类的所有信息，动态创建调用类的实例。
+ * Java中的反射使用的API基本集中在java.lang.reflect包里面，Class 类与 java.lang.reflect 类库一起对反射的概念进行了支持，该类库包含了 Field,Method,Constructor 类 (每个类都实现了 Member 接口)。这些类型的对象时由 JVM 在运行时创建的，用以表示未知类里对应的成员。
+ * Java中获取Class类的主要三种方法
+   * 通过 Object 类中的 getClass() 方法，想要用这种方法必须要明确具体的类并且创建该类的对象。
+   * 所有数据类型都具备一个静态的属性.class 来获取对应的 Class 对象。
+   * 通过给定类的字符串名称就可以获取该类的字节码对象，这样做扩展性更强。通过 Class.forName() 方法完成，必须要指定类的全限定名，由于前两种方法都是在知道该类的情况下获取该类的字节码对象，因此不会有异常，但是 Class.forName() 方法如果写错类的路径会报 ClassNotFoundException 的异常。
+ ```java 
+package data_structure;
+public class Student {
+	private int age;
+	private String name;
+	public Student(){
+		
+	}
+	public Student(int age,String name){
+		this.age=age;
+		this.name=name;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	@Override
+	public String toString() {
+		return "Student [age=" + age + ", name=" + name + "]";
+	}
+} 
+ 
+package data_structure;
+public class Test {
+	
+	public static void main(String[] args) {
+		
+		Student s = new Student();
+		
+		Class c1 = s.getClass();
+		
+		Class c2 = Student.class;
+		
+		try {
+			Class c3 = Class.forName("data_structure.Student");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+}
+ ```
+ 
 
