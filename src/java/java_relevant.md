@@ -1006,17 +1006,23 @@ package data_structure;
 public class Student {
 	private int age;
 	private String name;
+	public String className;
+	
 	public Student(){
 		System.out.println("Constructor");
 	}
-	public Student(int age,String name){
-		this.age=age;
-		this.name=name;
+	public Student(int age, String name, String className) {
+		super();
+		this.age = age;
+		this.name = name;
+		this.className = className;
 		System.out.println("Constructor use Fields");
 	}
+	
 	public int getAge() {
 		return age;
 	}
+	
 	public void setAge(int age) {
 		this.age = age;
 	}
@@ -1026,18 +1032,20 @@ public class Student {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	@Override
 	public String toString() {
 		return "Student [age=" + age + ", name=" + name + "]";
 	}
+	
 	public void fun(){
 		System.out.println("name:"+name);
 	}
 	public void fun(String name){
 		System.out.println("name:"+name);
 	}
-	
 }
+
 package data_structure;
 
 import java.io.FileReader;
