@@ -1040,11 +1040,13 @@ public class Student {
 }
 package data_structure;
 
+import java.io.FileReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class Test {	
+public class Test {
+	
 @SuppressWarnings("unchecked")
 public static void main(String[] args) throws Exception {
 
@@ -1055,17 +1057,28 @@ public static void main(String[] args) throws Exception {
 	try {
 		Class c3 = Class.forName("data_structure.Student");
 		Constructor<Student> constructor1 = c3.getConstructor();//无参构造
-		Constructor<Student> constructor2 = c3.getConstructor(int.class,String.class);//有参构造
+		Constructor<Student> constructor2 = c3.getConstructor(int.class,String.class,String.class);//有参构造
 
 		Student s1 = constructor1.newInstance();
-		Student s2 = constructor2.newInstance(10,"Tom");
+		Student s2 = constructor2.newInstance(10,"Tom","SIX");
 
 		System.out.println(s1.toString());
 		System.out.println(s2.toString());
 
-		//Field field1 = c3.getField("age");//不能获取私有属性
+		Field field1 = c3.getField("className");//不能获取私有属性
 		Field field2 = c3.getDeclaredField("name");//获取私有属性
+
+		System.out.println(field1);
 		System.out.println(field2);
+//		Field[] f1 = c3.getFields();遍历获取公有属性 Constructor/Method一样
+//		for(Field f:f1){
+//			System.out.println(f);
+//		}
+//		Field[] f2 = c3.getDeclaredFields();遍历获取所有属性
+//		for(Field f:f2){
+//			System.out.println(f);
+//		}
+
 		field2.setAccessible(true);//取消访问私有属性检查
 		field2.set(s1, "Jack");//为无参对象实例属性赋值
 		Object o = field2.get(s1);  //通过field2对象获取属性值
@@ -1073,8 +1086,15 @@ public static void main(String[] args) throws Exception {
 
 		Method m1 = c3.getMethod("fun");//调用空参方法
 		m1.invoke(s2);
-		Method m2 = c3.getMethod("fun",String.class);//调用有参方法
+		Method m2 = c3.getMethod("fun",String.class);
 		m2.invoke(s2, "Jay");
+
+		System.out.println(c3.getName());//获取对象全限定名称
+		System.out.println(c3.getPackage());// 获取包名
+		Class[] interfaces = c3.getInterfaces();//获取该类实现的所有接口
+		for(Class in:interfaces){
+			System.out.println(in);
+		}
 
 	} catch (ClassNotFoundException e) {
 		e.printStackTrace();
@@ -1082,17 +1102,20 @@ public static void main(String[] args) throws Exception {
 
 }
 }
+
 run
 Constructor
 Constructor
 Constructor use Fields
 Student [age=0, name=null]
 Student [age=10, name=Tom]
+public java.lang.String data_structure.Student.className
 private java.lang.String data_structure.Student.name
 Jack
 name:Tom
 name:Jay
-
+data_structure.Student
+package data_structure
  ```
 
   
