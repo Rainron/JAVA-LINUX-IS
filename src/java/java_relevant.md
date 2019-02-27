@@ -1005,11 +1005,12 @@ public class Student {
 	private int age;
 	private String name;
 	public Student(){
-		
+	   System.out.println("Constructor");		
 	}
 	public Student(int age,String name){
 		this.age=age;
 		this.name=name;
+		System.out.println("Constructor use Fields");
 	}
 	public int getAge() {
 		return age;
@@ -1049,5 +1050,28 @@ public class Test {
 	}
 }
  ```
- 
+*  通过反射机制创建对象，在创建对象之前要获得对象的构造函数对象，通过构造函数对象创建对应类的实例。
+ ```java
+ try {
+	Class c3 = Class.forName("data_structure.Student");
+	Constructor<Student> constructor1 = c3.getConstructor();//无参构造
+	Constructor<Student> constructor2 = c3.getConstructor(int.class,String.class);//有参构造
+
+	Student s1 = constructor1.newInstance();
+	Student s2 = constructor2.newInstance(10,"Tom");
+
+	System.out.println(s1.toString());
+	System.out.println(s2.toString());
+
+} catch (ClassNotFoundException e) {
+	e.printStackTrace();
+}
+
+run 
+Constructor
+Constructor
+Constructor use Fields
+Student [age=0, name=null]
+Student [age=10, name=Tom]
+ ```
 
