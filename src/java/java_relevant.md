@@ -999,13 +999,15 @@ value在准备阶段过后的初始值为0而不是123,而把value赋值的putst
    * 通过 Object 类中的 getClass() 方法，想要用这种方法必须要明确具体的类并且创建该类的对象。
    * 所有数据类型都具备一个静态的属性.class 来获取对应的 Class 对象。
    * 通过给定类的字符串名称就可以获取该类的字节码对象，这样做扩展性更强。通过 Class.forName() 方法完成，必须要指定类的全限定名，由于前两种方法都是在知道该类的情况下获取该类的字节码对象，因此不会有异常，但是 Class.forName() 方法如果写错类的路径会报 ClassNotFoundException 的异常。
+*  通过反射机制创建对象，在创建对象之前要获得对象的构造函数对象，通过构造函数对象创建对应类的实例。
+*  通过反射机制获取 Class 中的相关属性及相关方法。
  ```java 
 package data_structure;
 public class Student {
 	private int age;
 	private String name;
 	public Student(){
-	   System.out.println("Constructor");		
+		System.out.println("Constructor");
 	}
 	public Student(int age,String name){
 		this.age=age;
@@ -1024,54 +1026,73 @@ public class Student {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	@Override
 	public String toString() {
 		return "Student [age=" + age + ", name=" + name + "]";
 	}
-} 
- 
-package data_structure;
-public class Test {
-	
-	public static void main(String[] args) {
-		
-		Student s = new Student();
-		
-		Class c1 = s.getClass();
-		
-		Class c2 = Student.class;
-		
-		try {
-			Class c3 = Class.forName("data_structure.Student");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public void fun(){
+		System.out.println("name:"+name);
 	}
+	public void fun(String name){
+		System.out.println("name:"+name);
+	}
+	
 }
- ```
-*  通过反射机制创建对象，在创建对象之前要获得对象的构造函数对象，通过构造函数对象创建对应类的实例。
- ```java
- try {
-	Class c3 = Class.forName("data_structure.Student");
-	Constructor<Student> constructor1 = c3.getConstructor();//无参构造
-	Constructor<Student> constructor2 = c3.getConstructor(int.class,String.class);//有参构造
+package data_structure;
 
-	Student s1 = constructor1.newInstance();
-	Student s2 = constructor2.newInstance(10,"Tom");
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-	System.out.println(s1.toString());
-	System.out.println(s2.toString());
+public class Test {	
+@SuppressWarnings("unchecked")
+public static void main(String[] args) throws Exception {
 
-} catch (ClassNotFoundException e) {
-	e.printStackTrace();
+	Student s = new Student();
+	Class c1 = s.getClass();
+	Class c2 = Student.class;
+
+	try {
+		Class c3 = Class.forName("data_structure.Student");
+		Constructor<Student> constructor1 = c3.getConstructor();//无参构造
+		Constructor<Student> constructor2 = c3.getConstructor(int.class,String.class);//有参构造
+
+		Student s1 = constructor1.newInstance();
+		Student s2 = constructor2.newInstance(10,"Tom");
+
+		System.out.println(s1.toString());
+		System.out.println(s2.toString());
+
+		//Field field1 = c3.getField("age");//不能获取私有属性
+		Field field2 = c3.getDeclaredField("name");//获取私有属性
+		System.out.println(field2);
+		field2.setAccessible(true);//取消访问私有属性检查
+		field2.set(s1, "Jack");//为无参对象实例属性赋值
+		Object o = field2.get(s1);  //通过field2对象获取属性值
+		System.out.println(o);
+
+		Method m1 = c3.getMethod("fun");//调用空参方法
+		m1.invoke(s2);
+		Method m2 = c3.getMethod("fun",String.class);//调用有参方法
+		m2.invoke(s2, "Jay");
+
+	} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
+
 }
-
-run 
+}
+run
 Constructor
 Constructor
 Constructor use Fields
 Student [age=0, name=null]
 Student [age=10, name=Tom]
+private java.lang.String data_structure.Student.name
+Jack
+name:Tom
+name:Jay
+
  ```
 
+  
