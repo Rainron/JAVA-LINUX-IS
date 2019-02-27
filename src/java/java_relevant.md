@@ -1093,7 +1093,7 @@ public static void main(String[] args) throws Exception {
 
 		Method m1 = c3.getMethod("fun");//调用空参方法
 		m1.invoke(s2);
-		Method m2 = c3.getMethod("fun",String.class);
+		Method m2 = c3.getMethod("fun",String.class);//调用有参方法
 		m2.invoke(s2, "Jay");
 
 		System.out.println(c3.getName());//获取对象全限定名称
