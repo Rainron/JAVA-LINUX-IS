@@ -119,6 +119,15 @@ public E get(int index) {
 }
 直接指向数组下标位置的元素返回。
 
+public E set(int index, E element) {
+        rangeCheck(index);
+
+        E oldValue = elementData(index);
+        elementData[index] = element;
+        return oldValue;
+}
+set方法直接修改index的值
+
 public E remove(int index) {
     rangeCheck(index);
     modCount++;
@@ -182,8 +191,14 @@ void linkLast(E e) {
 同时把当前的node绑定到集合最末端，算法时间复杂度为O(n)，数量增大n倍所需要的时间增加n倍。
 指定插入
 
-
-
+public E set(int index, E element) {
+        checkElementIndex(index);
+        Node<E> x = node(index);
+        E oldVal = x.item;
+        x.item = element;
+        return oldVal;
+}
+直接修改node（index）的值返回
  
 public void add(int index, E element) {
         checkPositionIndex(index);
