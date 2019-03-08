@@ -110,6 +110,7 @@ public void add(int index, E element) {
         elementData[index] = element;
         size++;
 }
+主要操作为将indez+1后的元素后移，然后设置当前index为插入的元素
 大量copy导致大量的数组移动，导致性能底下。remove方法与add方法实现类似。
 随机访问和遍历
 public E get(int index) {
@@ -129,6 +130,7 @@ public E remove(int index) {
     return oldValue;
 }
 调用 System.arraycopy() 将 index+1 后面的元素都复制到 index 位置上，
+把最后的index元素设置为NULL
 该操作的时间复杂度为 O(N)，可以看出 ArrayList 删除元素的代价是非常高的。
 
 Vector
