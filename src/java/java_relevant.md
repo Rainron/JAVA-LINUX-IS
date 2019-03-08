@@ -193,6 +193,18 @@ public void add(int index, E element) {
         else
             linkBefore(element, node(index));
 }
+void linkBefore(E e, Node<E> succ) {
+        // assert succ != null;
+        final Node<E> pred = succ.prev;
+        final Node<E> newNode = new Node<>(pred, e, succ);
+        succ.prev = newNode;
+        if (pred == null)
+            first = newNode;
+        else
+            pred.next = newNode;
+        size++;
+        modCount++;
+}
 
 Node<E> node(int index) {
         // assert isElementIndex(index);
