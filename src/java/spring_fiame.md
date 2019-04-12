@@ -1,12 +1,10 @@
 # spring_frame
-### - [0. Spirng](#0-Spring)
-#### - [0.1. Spirng-IOC](#0.1-Spring-IOC)
-#### - [0.2  Spirng-AOP](#0.2-Spring-AOP)
+- [Spirng](#Spirng)
+    - [Spring-IOC](#Spring-IOC)
+    - [Spring-AOP](#Spring-AOP)
+- [MyBatis](#MyBatis)
 
-### - [1.MyBatis](#1-MyBatis)
-### - [2.SpringMvc](#2-SpringMvc)
-
-
+- [SpringMvc](#SpringMvc)
 
 
 
@@ -16,14 +14,10 @@
 
 
 
-## 0-Spring
+### Spirng
+### Spring-IOC
+### Spring-AOP
+### MyBatis
 
-### 0.1-Spring-IOC
+### SpringMvc
 
-### 0.2-Spring-AOP
-
-
-## 1-MyBatis
-
-
-## 2-SpringMvc
