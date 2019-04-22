@@ -142,6 +142,7 @@ public void test4(){
 		select * from rainron where name concat('%',#{name},'%')	
 	</select>
 </mapper>
+```
 ```java
 package mybatis.test.mapper;
 import java.util.List;
@@ -161,14 +162,86 @@ public interface RainronMapper {
 	public int insertRain(Rainron a);
 	
 }
-如两种方式存在xml优先覆盖注解
+如两种方式存在xml优先覆盖注解	
 ```
-
-
-
-
+#### 4.生命周期
+- SqlSessionFactoryBuilde 的作用在于创建 SqlSessionFactory ，创建成功后 SqlSessionFactoryBuilder就失去了作用，所以它只能存在于创建 SqlSessionFactory的方法中。
+- Sq!SessionFactory可以被认为是一个数据库连接池，它的作用是创建SqlSession接口对象。所有其生命周期应该存在于整个MyBatis工程中，一旦创建，应该长期保存，并且是以单例的方式存在，工程中公用，不然多个数据库连接池会导致数据库连接资源耗尽。
+- 如果说 SqlSessionFactory相当于数据库连接池，那么SqlSession就相当于一个数据库连接（ Connection对象），你可以在一个事务里面执行多条SQL，然后通过它的commit、rollback 等方法，提交或者回滚事务。所以它应该存活在一个业务请求中，处理完整个请求后，应该关闭这条连接，让它归还给SqlSessionFactory。
+- Mapper是一个接口，它由SqlSession 所创建，所以它的最大生命周期至多和SqlSession保持一致，尽管它很好用，但是由于SqlSession的关闭，它的数据库连接资源也会消失，所以它的生命周期应该小于等于SqlSession的生命周期。
 
 ### MyBatis-相关配置
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+
+	<!-- 属性配置 给系统配置一些运行参数 比如数据库连接配置  可以使用properties文件resource引入
+		 也可以使用resource对象读取配置文件 properties读取标志位
+	 -->
+	<properties/>
+	<properties resource="*.properties"/>
+	<!-- settings是MyBatis中最复杂的配置，它能深刻影响 MyBatis底层的运行 
+		 所以在大部分情况下不需要大量配置它，
+		 只需要修改一 些常用的规则即可， 比如自动映射、驼峰命名映射、级联规则、 是否启动缓存、执行器 CExecutor）类型等。 
+	-->
+	<settings>
+		<!-- 开启驼峰自动映射 -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- 二级缓存的总开关 -->
+		<setting name="cacheEnabled" value="false" />
+	</settings>
+	
+	<!-- 类的全限定名很长一般使用别名来代替  MyBatis中有系统定义别名及自定义别名 
+		 自定义别名需要通过Configuration获取TypeAliasRegis类对象的registerAlias方法注册别名
+	-->
+	<typeAliases>
+		<typeAlias alias="rainron" type="mybatis.test.pojo.Rainron"/> 
+		<!-- 支持包扫描 -->
+		<package name="mybatis.test.pojo"/> 
+	</typeAliases>
+	
+	<!-- pojo的javatype与数据库的类型jdbctype如何进行映射呢
+		 就是使用类型转换器
+		 系 统提供的 typeHandler能覆盖大部分场景的要求，但是有些情况下是不够的，枚举类就是要自定义类型转换器。
+	 -->
+	<typeHandlers/>
+	<!-- 对象工厂当
+	创建结果集时， MyBatis会使用一个对象工厂来完成创建这个结果集实例。在默认 的情况下，
+	 MyBatis 会使用其定义的对象工厂DefaultObjectFactory来完成对应的工作。也可以自定义对象工厂 -->
+	<objectFactory type=""/>
+	<!-- 插件  最灵活同时也是最复杂难以使用的组件 需要熟悉MyBatis底层原理 -->
+	<plugins/>
+	<!-- 行环境主要的作用是配置数据库信息，它可以配置多个数据库，一般配置一个可以
+		 下面又可以配置事务管理器及数据源
+	 -->
+	<environments default="environment">
+		<environment id="environment">
+		<transactionManager type="JDBC"></transactionManager>
+		<dataSource type="POOLED">
+			
+		</dataSource>
+	</environments>
+	<!-- 数据库厂商标识 支持不同类型数据库 -->
+	<databaseidProvider/>
+	<!-- 定义映射器 -->
+	<mappers>
+		<!-- 使用这个方案，可以单独指定Mapper的位置 -->
+		<!-- <mapper resource="mybatis/mappings/RainMapper.xml"/>
+		<mapper resource="mybatis/mappings/UserMapper.xml"/> -->
+		
+		<!-- 使用下面两个个方法，Mapper.xml 文件位置必须在和其内部 <mapper namespace="">的类在一起，当然，
+		使用注解模式的话，Mapper.xml文件就没有必要存在了 -->
+		
+		<!-- 直接指定一个包去扫描-内保包含多个Mapper配置- -->
+		<!-- <package name="mybatis.test.mapper"/> -->
+		
+		<!-- class 级别的指定 -->
+		<mapper class="mybatis.test.mapper.RainMapper"/>
+	</mappers>
+</configuration>
+```
 
 
 
