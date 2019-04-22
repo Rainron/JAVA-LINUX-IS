@@ -43,7 +43,38 @@
 1.SqlSessionFactory工厂接口 
 - MyBatis提了构造器 SqlSessionFactoryBuilder,它提供了一个类.org.apache.ibatis.session.Configuration 作为引导，采用的是Builder模式,具体的分步则是在Configuration类里面完成的。你可以使用xml或者代码的方式配置生成SqlSessionFactory.
 - xml配置SqlSessionFactory，MyBatis会读取xml配置文件，通过 Configuration 类对象构建整个MyBatis的上下文。SqlSessionFactory是一个接口，在MyBatis中它存在两个实现类：SqlSessionManager和DefaultSqlSessionFactory。 一般而言，具体是由DefaultSqlSessionFactory去实现的，而 SqlSessionManager 使用在多线程的环境中，而且每个基于MyBatis 的应用都是以一个SqlSessionFactory的实例为中心的，而SqlSessionFactory唯一的作用就是生产 MyBatis的核心接口对象SqlSession。
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN" 
+	"http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<!-- 别名 -->
+	<typeAliases>
+	<typeAlias alias="rainron" type="mybatis.test.Rainron"/> 
+	</typeAliases>
+	<!-- 数据库环境 -->
+	<environments default="environment">
+		<environment id="environment">
+			<transactionManager type="JDBC" />
+			<!-- MyBatis自带的连接池 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url"
+					value="jdbc:mysql://localhost:3306/test" />
+				<property name="username" value="root" />
+				<property name="password" value="root" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 配置映射文件的位置 -->
+	<mappers>
+		<mapper resource="mybatis/mapper/RainMapper.xml" />
+	</mappers>
+</configuration>
+```
+```java
 
+```
   
 
 
