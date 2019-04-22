@@ -71,6 +71,9 @@
 	<mappers>
 		<mapper resource="mybatis/mapper/RainMapper.xml" />
 	</mappers>
+	<mapper>
+		<class=" 
+	</mapper>
 </configuration>
 ```
 #### 2.SqlSession
@@ -78,6 +81,37 @@
  * 获取Mapper 接口。
  * 发送 SQL 给数据库。
  * 控制数据库事务。 
+```java
+private SqlSession session;
+@Before
+public void init(){
+
+	SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+	SqlSessionFactory ssf = builder.build(TestCase.class.getClassLoader().getResourceAsStream("mybatis-config.xml"));
+	session = ssf.openSession();
+}
+@Test
+public void test1(){
+	Rainron a = new Rainron();
+	a.setId(1);
+	a.setName("rainron1");
+	a.setAge(10);
+	//SqlSession发送sql
+	session.insert("mybatis.mapper.RainronMapper.save", a);
+	session.commit();
+	session.close();
+}
+@Test
+public void test4(){
+	RainronMapper rm = session.getMapper(RainronMapper.class);
+	//mapper发送sql
+	Rainron a = rm.getId(1);
+	System.out.println(a);
+	session.close();
+}
+使用Mapper接口编程可以消除SqlSession 带来的功能性代码，提高可读性,而且使用mapper一般ide会校验类型。
+
+```
 
 #### 3.SqlMapper映射器
 - 它由一个接口和对应的 XML 文件（或 注解〉组成。它可以配置以下内容：
@@ -91,30 +125,45 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="mybatis.test.mapper.RainronMapper">
-
 	<!-- 插入 -->
 	<insert id="insertRain" parameterType="Rainron">
 		insert into rainron values(#{id},#{name},#{age})
-	</insert>
-	
+	</insert>	
 	<delete id="deleteRain" parameterType="int">
 		delete from rainron where id = #{id}
 	</delete>
-	
 	<update id="updateRain" parameterType="Rainron">
 		update rainron set name = #{name},age = #{age} where id = #{id}
 	</update>
-	
 	<select id="getId" parameterType="int" resultType="Rainron">
 		select id , name ,age from rainron where id = #{id}	
 	</select>
-	
 	<select id="findRains" parameterType="String" resultType="Rainron">
 		select * from rainron where name concat('%',#{name},'%')	
 	</select>
-	
 </mapper>
+```java
+package mybatis.test.mapper;
+import java.util.List;
+import mybatis.test.pojo.Rainron;
+public interface RainronMapper {
+	
+	public int insertRain(Rainron a);
+	public int deleteRain(int id);
+	public int updateRain(Rainron a);
+	public Rainron getId(int id);
+	public List<Rainron> findRains(String rainname);
+	
+}
+除XML方式定义映射器外，还可以采用注解方式定义映射器，它只需要一个接口就可以通过MyBatis的注解来注入SQL
+public interface RainronMapper {
+	@Insert("insert into rainron values(#{id},#{name},#{age})")
+	public int insertRain(Rainron a);
+	
+}
+如两种方式存在xml优先覆盖注解
 ```
+
 
 
 
